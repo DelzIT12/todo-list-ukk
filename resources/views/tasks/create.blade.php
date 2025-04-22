@@ -26,7 +26,6 @@
                         <span class="input-group-text"><i class="bi bi-hourglass-split"></i></span>
                         <select name="status" class="form-select">
                             <option value="pending">Belum Selesai</option>
-                            <option value="completed">Selesai</option>
                         </select>
                     </div>
                 </div>
