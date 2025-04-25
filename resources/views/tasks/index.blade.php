@@ -23,11 +23,11 @@
                                 {{ $task->title }}
                             </h5>
                             <p class="card-text">
+                                <span class="badge bg-info text-dark">{{ ucfirst($task->priority) }}</span>
                                 <span class="badge 
                                     {{ $task->status === 'completed' ? 'bg-success' : 'bg-warning text-dark' }}">
                                     {{ $task->status === 'completed' ? 'Selesai' : 'Belum Selesai' }}
                                 </span>
-                                <span class="badge bg-info text-dark">{{ ucfirst($task->priority) }}</span>
                             </p>
                             <p class="text-muted mb-2">
                                 <i class="bi bi-calendar-event"></i>

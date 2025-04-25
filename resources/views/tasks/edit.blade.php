@@ -9,7 +9,7 @@
         </div>
 
         <div class="card-body p-4">
-            <form action="{{ route('tasks.update', $task->id) }}" method="POST">
+            <form id="taskForm" action="{{ route('tasks.update', $task->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -17,7 +17,7 @@
                     <label for="title" class="form-label fw-semibold">Judul Tugas</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                        <input type="text" name="title" id="title" class="form-control" value="{{ $task->title }}" required>
+                        <input type="text" name="title" id="title" class="form-control" value="{{ $task->title }}"placeholder="Masukkan judul tugas">
                     </div>
                 </div>
 
@@ -48,7 +48,7 @@
                     <label for="due_date" class="form-label fw-semibold">Batas Waktu</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                        <input type="date" name="due_date" id="due_date" class="form-control" value="{{ $task->due_date }}">
+                        <input type="text" name="due_date" id="due_date" class="form-control" value="{{ $task->due_date }}" placeholder="Pilih tanggal">
                     </div>
                 </div>
 
@@ -64,4 +64,69 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('taskForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Mencegah form langsung submit
+
+        const title = document.querySelector('input[name="title"]').value.trim();
+        const dueDate = document.querySelector('input[name="due_date"]').value.trim();
+
+        // Kata-kata/kode berbahaya
+        const forbiddenWords = ['<script>', 'DROP TABLE', 'SELECT * FROM', '--', 'INSERT INTO', 'DELETE FROM'];
+
+        // Cek apakah judul mengandung kata berbahaya
+        const isDangerous = forbiddenWords.some(word =>
+            title.toLowerCase().includes(word.toLowerCase())
+        );
+
+        if (title === '' || dueDate === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Data harus diisi!',
+                text: 'Judul dan Tanggal tidak boleh kosong.',
+            });
+            return;
+        }
+
+        if (isDangerous) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Input Tidak Diperbolehkan!',
+                text: 'Judul mengandung karakter atau kata yang tidak aman.',
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: "Apakah data sudah sesuai?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Simpan',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                e.target.submit();
+            }
+        });
+    });
+</script>
+
+
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
+
+<script>
+    flatpickr("#due_date", {
+        dateFormat: "Y/m/d",        // Format: Tahun/Bulan/Tanggal untuk disimpan
+        altInput: true,             // Menampilkan versi tampilan user
+        altFormat: "d F Y",         // Contoh: 25 April 2025
+        locale: "id",               // Bahasa Indonesia
+    });
+</script>
 @endsection
